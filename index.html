@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Poke Type Matchup</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <h1>Poké Type Matchup</h1>
+    <div id="instructions">
+      <strong>Instructions:</strong> Enter the name of your Pokémon to see which
+      types it’s strong and weak against!
+    </div>
+    <form id="pokemon-form">
+      <label id="input-label" for="pokemon-name-input"
+        >Who’s your Pokémon?</label
+      >
+      <input id="pokemon-name-input" type="text" />
+      <button id="submit-button" type="submit">Let’s go!</button>
+    </form>
+    <p id="pokemon-not-found" class="hidden">
+      Pokémon not found. Please try again.
+    </p>
+    <div id="matchups-container" class="hidden">
+      <h2 id="pokemon-name"></h2>
+      <div id="own-types-container"></div>
+      <div id="attacking-matchups-container"></div>
+
+      <div id="defending-matchups-container"></div>
+    </div>
+  </body>
+</html>
