@@ -10,6 +10,7 @@ const defendingMatchupsContainer = document.getElementById(
   "defending-matchups-container",
 );
 const pokemonName = document.getElementById("pokemon-name");
+const pokemonImage = document.getElementById("pokemon-image");
 
 // Form submission event
 pokemonForm.addEventListener("submit", function (event) {
@@ -18,13 +19,16 @@ pokemonForm.addEventListener("submit", function (event) {
   validatePokemon(pokemonName);
   pokemonNameInput.value = "";
 
-  // Hide matchups container to only display it if pokemon is found
+  // Hide matchups container to only display it if Pokemon is found
   matchupsContainer.classList.remove("displayed");
+
+  // Hide Pokemon image to only display it if Pokemon is found
+  pokemonImage.classList.remove("displayed");
 
   // Reset inner HTML of containers to remove previous content
   ownTypesContainer.innerHTML = "";
-  attackingMatchupsContainer.innerHTML = "<h3>Attacking</h3>";
-  defendingMatchupsContainer.innerHTML = "<h3>Defending</h3>";
+  attackingMatchupsContainer.innerHTML = `<h3 class="matchups-heading">Attacking</h3>`;
+  defendingMatchupsContainer.innerHTML = `<h3 class="matchups-heading">Defending</h3>`;
 });
 
 // Function to retrieve names of all Pokemon and validate input
@@ -85,6 +89,7 @@ async function getPokemon(pokemonName) {
                 {
                 getPokemon(pokemon:${pokemonName}) {
                 key
+				num
                 types {
                     name
                     matchup {
@@ -114,7 +119,11 @@ async function getPokemon(pokemonName) {
     });
     const pokemonData = await response.json();
 
+    // Display matchups container when Pokemon is found
     matchupsContainer.classList.add("displayed");
+
+    // Display Pokemon image when Pokemon is found
+    pokemonImage.classList.add("displayed");
 
     // Call displayMatchups function
     displayMatchups(pokemonData);
@@ -128,9 +137,12 @@ async function getPokemon(pokemonName) {
 // Function to display Pokemon matchups
 function displayMatchups(pokemonData) {
   const getPokemon = pokemonData.data.getPokemon;
+  const pokemonKey = getPokemon.key;
+
+  // Convert Pokemon number to four digits to add as image source
+  const pokemonNumber = getPokemon.num.toString().padStart(4, "0");
   const getPokemonTypes = getPokemon.types;
   const numberOfTypes = getPokemon.types.length;
-  const pokemonKey = getPokemon.key;
 
   let typeNames = [];
 
@@ -150,6 +162,13 @@ function displayMatchups(pokemonData) {
 
   // Add Pokemon's name
   pokemonName.textContent = pokemonKey;
+
+  // Add Pokemon's image
+  pokemonImage.src =
+    "https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/" +
+    pokemonNumber +
+    ".png";
+  pokemonImage.alt = "An image of " + pokemonKey + ".";
 
   // Loop through all types and create an array for each property (new Set is used
   // to prevent duplication)
@@ -225,14 +244,14 @@ function displayMatchups(pokemonData) {
   const numberOfTypeNames = typeNames.length;
   for (let i = 0; i < numberOfTypeNames; i++) {
     const ownTypeItem = document.createElement("span");
-    const ownTypeImg = document.createElement("img");
-    ownTypeImg.classList.add("type-image");
-    ownTypeImg.src = "icons/" + typeNames[i] + ".svg";
-    ownTypeImg.alt = "An icon for " + typeNames[i] + " type Pokémon.";
+    const ownTypeImage = document.createElement("img");
+    ownTypeImage.classList.add("type-image");
+    ownTypeImage.src = "icons/" + typeNames[i] + ".svg";
+    ownTypeImage.alt = "An icon for " + typeNames[i] + " type Pokémon.";
 
     ownTypeItem.classList.add("type");
 
-    ownTypeItem.append(ownTypeImg);
+    ownTypeItem.append(ownTypeImage);
     ownTypesContainer.append(ownTypeItem);
     ownTypeItem.append(typeNames[i]);
   }
@@ -256,16 +275,18 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfAttackingDoubleEffectiveTypes; i++) {
       const attackingDoubleEffectiveTypeItem = document.createElement("span");
-      const attackingDoubleEffectiveTypeImg = document.createElement("img");
-      attackingDoubleEffectiveTypeImg.classList.add("type-image");
-      attackingDoubleEffectiveTypeImg.src =
+      const attackingDoubleEffectiveTypeImage = document.createElement("img");
+      attackingDoubleEffectiveTypeImage.classList.add("type-image");
+      attackingDoubleEffectiveTypeImage.src =
         "icons/" + attackingDoubleEffectiveTypes[i] + ".svg";
-      attackingDoubleEffectiveTypeImg.alt =
+      attackingDoubleEffectiveTypeImage.alt =
         "An icon for " + attackingDoubleEffectiveTypes[i] + " type Pokémon.";
 
       attackingDoubleEffectiveTypeItem.classList.add("type");
 
-      attackingDoubleEffectiveTypeItem.append(attackingDoubleEffectiveTypeImg);
+      attackingDoubleEffectiveTypeItem.append(
+        attackingDoubleEffectiveTypeImage,
+      );
       attackingDoubleEffectiveTypesContainer.append(
         attackingDoubleEffectiveTypeItem,
       );
@@ -289,16 +310,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfAttackingEffectiveTypes; i++) {
       const attackingEffectivetypeItem = document.createElement("span");
-      const attackingEffectiveTypeImg = document.createElement("img");
-      attackingEffectiveTypeImg.classList.add("type-image");
-      attackingEffectiveTypeImg.src =
+      const attackingEffectiveTypeImage = document.createElement("img");
+      attackingEffectiveTypeImage.classList.add("type-image");
+      attackingEffectiveTypeImage.src =
         "icons/" + attackingEffectiveTypes[i] + ".svg";
-      attackingEffectiveTypeImg.alt =
+      attackingEffectiveTypeImage.alt =
         "An icon for " + attackingEffectiveTypes[i] + " type Pokémon.";
 
       attackingEffectivetypeItem.classList.add("type");
 
-      attackingEffectivetypeItem.append(attackingEffectiveTypeImg);
+      attackingEffectivetypeItem.append(attackingEffectiveTypeImage);
       attackingEffectiveTypesContainer.append(attackingEffectivetypeItem);
       attackingEffectivetypeItem.append(attackingEffectiveTypes[i]);
       attackingMatchupsContainer.append(attackingEffectiveTypesContainer);
@@ -320,15 +341,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfAttackingNormalTypes; i++) {
       const attackingNormaltypeItem = document.createElement("span");
-      const attackingNormalTypeImg = document.createElement("img");
-      attackingNormalTypeImg.classList.add("type-image");
-      attackingNormalTypeImg.src = "icons/" + attackingNormalTypes[i] + ".svg";
-      attackingNormalTypeImg.alt =
+      const attackingNormalTypeImage = document.createElement("img");
+      attackingNormalTypeImage.classList.add("type-image");
+      attackingNormalTypeImage.src =
+        "icons/" + attackingNormalTypes[i] + ".svg";
+      attackingNormalTypeImage.alt =
         "An icon for " + attackingNormalTypes[i] + " type Pokémon.";
 
       attackingNormaltypeItem.classList.add("type");
 
-      attackingNormaltypeItem.append(attackingNormalTypeImg);
+      attackingNormaltypeItem.append(attackingNormalTypeImage);
       attackingNormalTypesContainer.append(attackingNormaltypeItem);
       attackingNormaltypeItem.append(attackingNormalTypes[i]);
       attackingMatchupsContainer.append(attackingNormalTypesContainer);
@@ -350,16 +372,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfAttackingEffectlessTypes; i++) {
       const attackingEffectlesstypeItem = document.createElement("span");
-      const attackingEffectlessTypeImg = document.createElement("img");
-      attackingEffectlessTypeImg.classList.add("type-image");
-      attackingEffectlessTypeImg.src =
+      const attackingEffectlessTypeImage = document.createElement("img");
+      attackingEffectlessTypeImage.classList.add("type-image");
+      attackingEffectlessTypeImage.src =
         "icons/" + attackingEffectlessTypes[i] + ".svg";
-      attackingEffectlessTypeImg.alt =
+      attackingEffectlessTypeImage.alt =
         "An icon for " + attackingEffectlessTypes[i] + " type Pokémon.";
 
       attackingEffectlesstypeItem.classList.add("type");
 
-      attackingEffectlesstypeItem.append(attackingEffectlessTypeImg);
+      attackingEffectlesstypeItem.append(attackingEffectlessTypeImage);
       attackingEffectlessTypesContainer.append(attackingEffectlesstypeItem);
       attackingEffectlesstypeItem.append(attackingEffectlessTypes[i]);
       attackingMatchupsContainer.append(attackingEffectlessTypesContainer);
@@ -381,16 +403,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfAttackingResistedTypes; i++) {
       const attackingResistedtypeItem = document.createElement("span");
-      const attackingResistedTypeImg = document.createElement("img");
-      attackingResistedTypeImg.classList.add("type-image");
-      attackingResistedTypeImg.src =
+      const attackingResistedTypeImage = document.createElement("img");
+      attackingResistedTypeImage.classList.add("type-image");
+      attackingResistedTypeImage.src =
         "icons/" + attackingResistedTypes[i] + ".svg";
-      attackingResistedTypeImg.alt =
+      attackingResistedTypeImage.alt =
         "An icon for " + attackingResistedTypes[i] + " type Pokémon.";
 
       attackingResistedtypeItem.classList.add("type");
 
-      attackingResistedtypeItem.append(attackingResistedTypeImg);
+      attackingResistedtypeItem.append(attackingResistedTypeImage);
       attackingResistedTypesContainer.append(attackingResistedtypeItem);
       attackingResistedtypeItem.append(attackingResistedTypes[i]);
       attackingMatchupsContainer.append(attackingResistedTypesContainer);
@@ -415,16 +437,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfAttackingDoubleResistedTypes; i++) {
       const attackingDoubleResistedtypeItem = document.createElement("span");
-      const attackingDoubleResistedTypeImg = document.createElement("img");
-      attackingDoubleResistedTypeImg.classList.add("type-image");
-      attackingDoubleResistedTypeImg.src =
+      const attackingDoubleResistedTypeImage = document.createElement("img");
+      attackingDoubleResistedTypeImage.classList.add("type-image");
+      attackingDoubleResistedTypeImage.src =
         "icons/" + attackingDoubleResistedTypes[i] + ".svg";
-      attackingDoubleResistedTypeImg.alt =
+      attackingDoubleResistedTypeImage.alt =
         "An icon for " + attackingDoubleResistedTypes[i] + " type Pokémon.";
 
       attackingDoubleResistedtypeItem.classList.add("type");
 
-      attackingDoubleResistedtypeItem.append(attackingDoubleResistedTypeImg);
+      attackingDoubleResistedtypeItem.append(attackingDoubleResistedTypeImage);
       attackingDoubleResistedTypesContainer.append(
         attackingDoubleResistedtypeItem,
       );
@@ -452,16 +474,18 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfDefendingDoubleEffectiveTypes; i++) {
       const defendingDoubleEffectivetypeItem = document.createElement("span");
-      const defendingDoubleEffectiveTypeImg = document.createElement("img");
-      defendingDoubleEffectiveTypeImg.classList.add("type-image");
-      defendingDoubleEffectiveTypeImg.src =
+      const defendingDoubleEffectiveTypeImage = document.createElement("img");
+      defendingDoubleEffectiveTypeImage.classList.add("type-image");
+      defendingDoubleEffectiveTypeImage.src =
         "icons/" + defendingDoubleEffectiveTypes[i] + ".svg";
-      defendingDoubleEffectiveTypeImg.alt =
+      defendingDoubleEffectiveTypeImage.alt =
         "An icon for " + defendingDoubleEffectiveTypes[i] + " type Pokémon.";
 
       defendingDoubleEffectivetypeItem.classList.add("type");
 
-      defendingDoubleEffectivetypeItem.append(defendingDoubleEffectiveTypeImg);
+      defendingDoubleEffectivetypeItem.append(
+        defendingDoubleEffectiveTypeImage,
+      );
       defendingDoubleEffectiveTypesContainer.append(
         defendingDoubleEffectivetypeItem,
       );
@@ -485,16 +509,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfDefendingEffectiveTypes; i++) {
       const defendingEffectivetypeItem = document.createElement("span");
-      const defendingEffectiveTypeImg = document.createElement("img");
-      defendingEffectiveTypeImg.classList.add("type-image");
-      defendingEffectiveTypeImg.src =
+      const defendingEffectiveTypeImage = document.createElement("img");
+      defendingEffectiveTypeImage.classList.add("type-image");
+      defendingEffectiveTypeImage.src =
         "icons/" + defendingEffectiveTypes[i] + ".svg";
-      defendingEffectiveTypeImg.alt =
+      defendingEffectiveTypeImage.alt =
         "An icon for " + defendingEffectiveTypes[i] + " type Pokémon.";
 
       defendingEffectivetypeItem.classList.add("type");
 
-      defendingEffectivetypeItem.append(defendingEffectiveTypeImg);
+      defendingEffectivetypeItem.append(defendingEffectiveTypeImage);
       defendingEffectiveTypesContainer.append(defendingEffectivetypeItem);
       defendingEffectivetypeItem.append(defendingEffectiveTypes[i]);
       defendingMatchupsContainer.append(defendingEffectiveTypesContainer);
@@ -516,15 +540,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfDefendingNormalTypes; i++) {
       const defendingNormaltypeItem = document.createElement("span");
-      const defendingNormalTypeImg = document.createElement("img");
-      defendingNormalTypeImg.classList.add("type-image");
-      defendingNormalTypeImg.src = "icons/" + defendingNormalTypes[i] + ".svg";
-      defendingNormalTypeImg.alt =
+      const defendingNormalTypeImage = document.createElement("img");
+      defendingNormalTypeImage.classList.add("type-image");
+      defendingNormalTypeImage.src =
+        "icons/" + defendingNormalTypes[i] + ".svg";
+      defendingNormalTypeImage.alt =
         "An icon for " + defendingNormalTypes[i] + " type Pokémon.";
 
       defendingNormaltypeItem.classList.add("type");
 
-      defendingNormaltypeItem.append(defendingNormalTypeImg);
+      defendingNormaltypeItem.append(defendingNormalTypeImage);
       defendingNormalTypesContainer.append(defendingNormaltypeItem);
       defendingNormaltypeItem.append(defendingNormalTypes[i]);
       defendingMatchupsContainer.append(defendingNormalTypesContainer);
@@ -546,16 +571,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfDefendingEffectlessTypes; i++) {
       const defendingEffectlesstypeItem = document.createElement("span");
-      const defendingEffectlessTypeImg = document.createElement("img");
-      defendingEffectlessTypeImg.classList.add("type-image");
-      defendingEffectlessTypeImg.src =
+      const defendingEffectlessTypeImage = document.createElement("img");
+      defendingEffectlessTypeImage.classList.add("type-image");
+      defendingEffectlessTypeImage.src =
         "icons/" + defendingEffectlessTypes[i] + ".svg";
-      defendingEffectlessTypeImg.alt =
+      defendingEffectlessTypeImage.alt =
         "An icon for " + defendingEffectlessTypes[i] + " type Pokémon.";
 
       defendingEffectlesstypeItem.classList.add("type");
 
-      defendingEffectlesstypeItem.append(defendingEffectlessTypeImg);
+      defendingEffectlesstypeItem.append(defendingEffectlessTypeImage);
       defendingEffectlessTypesContainer.append(defendingEffectlesstypeItem);
       defendingEffectlesstypeItem.append(defendingEffectlessTypes[i]);
       defendingMatchupsContainer.append(defendingEffectlessTypesContainer);
@@ -577,16 +602,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfDefendingResistedTypes; i++) {
       const defendingResistedtypeItem = document.createElement("span");
-      const defendingResistedTypeImg = document.createElement("img");
-      defendingResistedTypeImg.classList.add("type-image");
-      defendingResistedTypeImg.src =
+      const defendingResistedTypeImage = document.createElement("img");
+      defendingResistedTypeImage.classList.add("type-image");
+      defendingResistedTypeImage.src =
         "icons/" + defendingResistedTypes[i] + ".svg";
-      defendingResistedTypeImg.alt =
+      defendingResistedTypeImage.alt =
         "An icon for " + defendingResistedTypes[i] + " type Pokémon.";
 
       defendingResistedtypeItem.classList.add("type");
 
-      defendingResistedtypeItem.append(defendingResistedTypeImg);
+      defendingResistedtypeItem.append(defendingResistedTypeImage);
       defendingResistedTypesContainer.append(defendingResistedtypeItem);
       defendingResistedtypeItem.append(defendingResistedTypes[i]);
       defendingMatchupsContainer.append(defendingResistedTypesContainer);
@@ -611,16 +636,16 @@ function displayMatchups(pokemonData) {
 
     for (let i = 0; i < numberOfDefendingDoubleResistedTypes; i++) {
       const defendingDoubleResistedtypeItem = document.createElement("span");
-      const defendingDoubleResistedTypeImg = document.createElement("img");
-      defendingDoubleResistedTypeImg.classList.add("type-image");
-      defendingDoubleResistedTypeImg.src =
+      const defendingDoubleResistedTypeImage = document.createElement("img");
+      defendingDoubleResistedTypeImage.classList.add("type-image");
+      defendingDoubleResistedTypeImage.src =
         "icons/" + defendingDoubleResistedTypes[i] + ".svg";
-      defendingDoubleResistedTypeImg.alt =
+      defendingDoubleResistedTypeImage.alt =
         "An icon for " + defendingDoubleResistedTypes[i] + " type Pokémon.";
 
       defendingDoubleResistedtypeItem.classList.add("type");
 
-      defendingDoubleResistedtypeItem.append(defendingDoubleResistedTypeImg);
+      defendingDoubleResistedtypeItem.append(defendingDoubleResistedTypeImage);
       defendingDoubleResistedTypesContainer.append(
         defendingDoubleResistedtypeItem,
       );

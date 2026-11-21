@@ -26,30 +26,17 @@ body {
   margin: 0 0 12rem;
 }
 
-h1 {
+strong {
+  font-weight: 600;
+}
+
+#title {
   text-align: center;
   font-size: 4rem;
   font-weight: 600;
   color: #ffcb47;
   -webkit-text-stroke: 7px #0d1424;
   paint-order: stroke fill;
-}
-
-h2 {
-  font-size: 2.5rem;
-  text-transform: capitalize;
-  margin: 0;
-  font-weight: 600;
-}
-
-h3 {
-  font-size: 1.75rem;
-  margin: 0;
-  font-weight: 600;
-}
-
-strong {
-  font-weight: 600;
 }
 
 #instructions {
@@ -112,6 +99,49 @@ strong {
   outline-offset: 2px;
 }
 
+#pokemon-name {
+  font-size: 2.7rem;
+  text-transform: capitalize;
+  margin: 0;
+  font-weight: 600;
+}
+
+#pokemon-image-wrapper {
+  width: 14rem;
+  height: 14rem;
+  background-color: #bbc6d6;
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  border: 4px solid #111827;
+  border-radius: 15rem;
+  margin: 2rem 0 1rem;
+}
+
+#pokemon-image {
+  width: 10rem;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+  -webkit-transition: -webkit-transform 0.8s;
+  transition: -webkit-transform 0.8s;
+  transition: transform 0.8s;
+  transition:
+    transform 0.8s,
+    -webkit-transform 0.8s;
+}
+
+#pokemon-image.displayed {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
+
 #matchups-container {
   margin: 0 2.5rem;
   visibility: hidden;
@@ -133,6 +163,12 @@ strong {
 
 #pokemon-not-found.hidden {
   visibility: hidden;
+}
+
+.matchups-heading {
+  font-size: 1.75rem;
+  margin: 0;
+  font-weight: 600;
 }
 
 #attacking-matchups-container,
