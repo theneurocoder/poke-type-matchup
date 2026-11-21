@@ -115,15 +115,23 @@ strong {
 
 #matchups-container {
   margin: 0 2.5rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+#matchups-container.displayed {
+  visibility: visible;
+  opacity: 1;
 }
 
 #pokemon-not-found {
   text-align: center;
   margin-top: 2rem;
+  visibility: visible;
 }
 
-#pokemon-not-found.hidden,
-#matchups-container.hidden {
+#pokemon-not-found.hidden {
   visibility: hidden;
 }
 

@@ -19,7 +19,7 @@ pokemonForm.addEventListener("submit", function (event) {
   pokemonNameInput.value = "";
 
   // Hide matchups container to only display it if pokemon is found
-  matchupsContainer.classList.add("hidden");
+  matchupsContainer.classList.remove("displayed");
 
   // Reset inner HTML of containers to remove previous content
   ownTypesContainer.innerHTML = "";
@@ -62,14 +62,13 @@ async function validatePokemon(pokemonName) {
     if (pokemonExists) {
       getPokemon(pokemonName);
       pokemonNotFound.classList.add("hidden");
-      matchupsContainer.classList.remove("hidden");
     } else {
       pokemonNotFound.classList.remove("hidden");
     }
   } catch (error) {
     console.error("Could not validate Pokémon:", error);
     matchupsContainer.innerHTML = "Could not validate Pokémon.";
-    matchupsContainer.classList.remove("hidden");
+    matchupsContainer.classList.add("displayed");
   }
 }
 
@@ -115,11 +114,14 @@ async function getPokemon(pokemonName) {
     });
     const pokemonData = await response.json();
 
+    matchupsContainer.classList.add("displayed");
+
     // Call displayMatchups function
     displayMatchups(pokemonData);
   } catch (error) {
     console.error("Could not retrieve Pokémon:", error);
     matchupsContainer.innerHTML = "Could not retrieve Pokémon.";
+    matchupsContainer.classList.add("displayed");
   }
 }
 
