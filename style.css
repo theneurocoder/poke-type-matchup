@@ -117,6 +117,7 @@ strong {
   margin: 0 2.5rem;
   visibility: hidden;
   opacity: 0;
+  -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
 }
 
